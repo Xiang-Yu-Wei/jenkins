@@ -7,31 +7,51 @@ import com.synopsys.arc.jenkins.plugins.rolestrategy.RoleType
 
 class adduser implements Serializable {
 
-    def assignUsersToRole(List<String> userList, String roleName) {
+    def assignUsersToRole(List<String> userList, String roleName , String itemRoleName = null) {
         Jenkins jenkins = Jenkins.get()
         def rbas = jenkins.getAuthorizationStrategy()
         def globalRoleMap = rbas.getRoleMap(RoleType.Global)
+        if (itemRoleName == null || itemRoleName.trim() == '') {
 
-        Set<Permission> permissions = new HashSet<>()
-        permissions.add(Jenkins.ADMINISTER)
-        Role adminRole = new Role(roleName, permissions)
+            Set<Permission> permissions = new HashSet<>()
+            permissions.add(Jenkins.ADMINISTER)
+            Role adminRole = new Role(roleName, permissions)
+            def role = globalRoleMap.getRole(roleName)
 
-        def role = globalRoleMap.getRole(roleName)
-        if (role == null) {
-            println("找不到 $roleName 自动创建")
-            globalRoleMap.addRole(adminRole)
-            role = globalRoleMap.getRole(roleName)
-            if (role == null) {
-                throw new RuntimeException("角色创建失败")
+            userList.each { username ->
+                println("给用户 '${username}' 分配角色 '${roleName}'")
+                globalRoleMap.assignRole(role, new PermissionEntry(AuthorizationType.USER, username))
             }
+
+            jenkins.setAuthorizationStrategy(rbas)
+            jenkins.save()
+
+        } else {
+
+            def ItemRoleMap = rbas.getRoleMap(RoleType.Project)
+
+
+            Set<Permission> permissions = new HashSet<>()
+            permissions.add(Jenkins.ADMINISTER)
+            Role adminRole = new Role(roleName, permissions)
+
+            def role = globalRoleMap.getRole(roleName)
+
+            def itemRole = ItemRoleMap.getRole(itemRoleName)
+            userList.each { username ->
+                println("给用户 '${username}' 分配角色 '${roleName}'")
+                globalRoleMap.assignRole(role, new PermissionEntry(AuthorizationType.USER, username))
+                itemRole.assignRole(itemRole,new PermissionEntry(AuthorizationType.USER, username))
+            }
+
+            jenkins.setAuthorizationStrategy(rbas)
+            jenkins.save()
         }
 
-        userList.each { username ->
-            println("给用户 '${username}' 分配角色 '${roleName}'")
-            globalRoleMap.assignRole(role, new PermissionEntry(AuthorizationType.USER, username))
-        }
 
-        jenkins.setAuthorizationStrategy(rbas)
-        jenkins.save()
+        } // 其他逻辑...
     }
-}
+
+
+
+
