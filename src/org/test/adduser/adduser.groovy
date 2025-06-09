@@ -17,6 +17,11 @@ class adduser implements Serializable {
             permissions.add(Jenkins.ADMINISTER)
             Role adminRole = new Role(roleName, permissions)
             def role = globalRoleMap.getRole(roleName)
+            if (role == null) {
+                println("找不到 $roleName 自动创建")
+                globalRoleMap.addRole(adminRole)
+                role = globalRoleMap.getRole(roleName)
+            }
 
             userList.each { username ->
                 println("给用户 '${username}' 分配角色 '${roleName}'")
