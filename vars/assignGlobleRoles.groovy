@@ -3,13 +3,13 @@ import hudson.security.Permission
 import jenkins.model.Jenkins
 import com.synopsys.arc.jenkins.plugins.rolestrategy.RoleType
 
-def call(List<String> userList = null, List<String> groupList = null ,String roleName = null) {
+def call(List<String> userList = null, List<String> groupList = null ,String globleName = null) {
 
     Jenkins jenkins = Jenkins.get()
     def rbas = jenkins.getAuthorizationStrategy()
     Set<Permission> permissions = new HashSet<>()
     permissions.add(Jenkins.ADMINISTER)
-    Role adminRole = new Role(roleName, permissions)
+    Role adminRole = new Role(globleName, permissions)
     def globalRoleMap = rbas.getRoleMap(RoleType.Global)
 
     userList?.each { username ->
