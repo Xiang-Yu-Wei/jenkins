@@ -7,7 +7,7 @@ import com.synopsys.arc.jenkins.plugins.rolestrategy.RoleType
 
 class adduser implements Serializable {
 
-    def assignUsersToRole(List<String> userList, List<String> groupList = null ,String roleName = null , String itemRoleName = null) {
+    def assignUsersToRole(List<String> userList = null , List<String> groupList = null ,String roleName = null , String itemRoleName = null) {
         Jenkins jenkins = Jenkins.get()
         Set<Permission> permissions = new HashSet<>()
         permissions.add(Jenkins.ADMINISTER)
@@ -19,7 +19,7 @@ class adduser implements Serializable {
             }else{
                 def ItemRoleMap = rbas.getRoleMap(RoleType.Project)
                 def itemRole = ItemRoleMap.getRole(itemRoleName)
-                userList.each { username ->
+                userList?.each { username ->
                     ItemRoleMap.assignRole(itemRole,new PermissionEntry(AuthorizationType.USER, username))
                 }
                 groupList?.each { groupname ->
@@ -36,7 +36,7 @@ class adduser implements Serializable {
                 Role adminRole = new Role(roleName, permissions)
                 def role = globalRoleMap.getRole(roleName)
 
-                userList.each { username ->
+                userList?.each { username ->
                     globalRoleMap.assignRole(role, new PermissionEntry(AuthorizationType.USER, username))
                 }
                 groupList?.each { groupname ->
@@ -55,7 +55,7 @@ class adduser implements Serializable {
                 def role = globalRoleMap.getRole(roleName)
 
                 def itemRole = ItemRoleMap.getRole(itemRoleName)
-                userList.each { username ->
+                userList?.each { username ->
                     globalRoleMap.assignRole(role, new PermissionEntry(AuthorizationType.USER, username))
                     ItemRoleMap.assignRole(itemRole,new PermissionEntry(AuthorizationType.USER, username))
                 }
