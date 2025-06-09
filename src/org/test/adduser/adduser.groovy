@@ -41,7 +41,7 @@ class adduser implements Serializable {
             userList.each { username ->
                 println("给用户 '${username}' 分配角色 '${roleName}'")
                 globalRoleMap.assignRole(role, new PermissionEntry(AuthorizationType.USER, username))
-                itemRole.assignRole(itemRole,new PermissionEntry(AuthorizationType.USER, username))
+                ItemRoleMap.assignRole(itemRole,new PermissionEntry(AuthorizationType.USER, username))
             }
 
             jenkins.setAuthorizationStrategy(rbas)
