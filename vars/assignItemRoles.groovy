@@ -3,7 +3,8 @@ import hudson.security.Permission
 import jenkins.model.Jenkins
 import com.synopsys.arc.jenkins.plugins.rolestrategy.RoleType
 
-def call(List<String> userList = null, List<String> groupList = null ,String itemName = null) {
+def call(List<String> userList = null, List<String> groupList = null ,String itemRoleName = null) {
+
     Jenkins jenkins = Jenkins.get()
     def rbas = jenkins.getAuthorizationStrategy()
     Set<Permission> permissions = new HashSet<>()
