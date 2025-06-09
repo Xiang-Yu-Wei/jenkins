@@ -7,7 +7,7 @@ import com.synopsys.arc.jenkins.plugins.rolestrategy.RoleType
 
 class adduser implements Serializable {
 
-    def assignUsersToRole(List<String> userList, List<String> groupList ,String roleName = null , String itemRoleName = null) {
+    def assignUsersToRole(List<String> userList, List<String> groupList = null ,String roleName = null , String itemRoleName = null) {
         Jenkins jenkins = Jenkins.get()
         def rbas = jenkins.getAuthorizationStrategy()
         def globalRoleMap = rbas.getRoleMap(RoleType.Global)
